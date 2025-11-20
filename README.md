@@ -51,10 +51,15 @@ RegisterNumber:  212224240157
 ## Output:
 ![multivariate linear regression model for predicting the price of the house and number of occupants in the house](sam.png)
 
-<img width="393" height="24" alt="Screenshot 2025-11-20 064841" src="https://github.com/user-attachments/assets/f41f2691-f42a-4fcb-8e9f-b0496b4e8431" />
 
 
-<img width="295" height="138" alt="Screenshot 2025-11-20 064848" src="https://github.com/user-attachments/assets/83d1b258-c6e2-4864-8cbc-81b898ca2c87" />
+
+<img width="393" height="24" alt="Screenshot 2025-11-20 064841" src="https://github.com/user-attachments/assets/ae4aec80-bcf5-400c-a371-3d5dd90dcdf5" />
+
+
+
+
+<img width="295" height="138" alt="Screenshot 2025-11-20 064848" src="https://github.com/user-attachments/assets/c370dabd-bae5-4f26-bef2-4b6f1e70ba99" />
 
 
 ## Result:
