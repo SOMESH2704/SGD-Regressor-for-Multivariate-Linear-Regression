@@ -13,53 +13,51 @@ Load California housing data, select features and targets, and split into traini
 
 ## Program:
 ```
-/*
-import numpy as np
-from sklearn.datasets import fetch_california_housing
-from sklearn.linear_model import SGDRegressor
-from sklearn.multioutput import MultiOutputRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import StandardScaler
-data = fetch_california_housing()
-x= data.data[:,:3]
-y=np.column_stack((data.target,data.data[:,6]))
-x_train, x_test, y_train,y_test = train_test_split(x,y, test_size = 0.2, random_state =42)
-scaler_x = StandardScaler()
-scaler_y = StandardScaler()
-x_train = scaler_x.fit_transform(x_train)
-x_test = scaler_x.fit_transform(x_test)
-y_train = scaler_y.fit_transform(y_train)
-y_test = scaler_y.fit_transform(y_test)
-sgd = SGDRegressor(max_iter=1000, tol = 1e-3)
-multi_output_sgd= MultiOutputRegressor(sgd)
-multi_output_sgd.fit(x_train, y_train)
-y_pred =multi_output_sgd.predict(x_test)
-y_pred = scaler_y.inverse_transform(y_pred)
-y_test = scaler_y.inverse_transform(y_test)
-print(y_pred)
-mse = mean_squared_error(y_test,y_pred)
-print("Mean Squared Error:",mse)
-print("\nPredictions:\n",y_pred[:5])
 
 Program to implement the multivariate linear regression model for predicting the price of the house and number of occupants in the house with SGD regressor.
-Developed by: SOMESHWAR KUMAR
-RegisterNumber:  212224240157
-*/
+Developed by: Someshwar Kumar
+RegisterNumber: 212224240157
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import SGDRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error, r2_score
+data = {
+    'Size': [750, 800, 850, 900, 1200, 1500, 1700, 2000, 2200, 2500],
+    'Rooms': [2, 2, 2, 3, 3, 4, 4, 5, 5, 6],
+    'Location': [1, 2, 1, 3, 2, 3, 1, 2, 3, 2],
+    'Price': [50, 55, 60, 70, 100, 130, 150, 200, 220, 250],
+    'Occupants': [3, 3, 4, 4, 5, 6, 6, 7, 8, 9]
+}
+df = pd.DataFrame(data)
+X = df[['Size', 'Rooms', 'Location']]
+y = df[['Price', 'Occupants']]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+price_model = SGDRegressor(max_iter=1000, tol=1e-3, random_state=42)
+occupants_model = SGDRegressor(max_iter=1000, tol=1e-3, random_state=42)
+price_model.fit(X_train_scaled, y_train['Price'])
+occupants_model.fit(X_train_scaled, y_train['Occupants'])
+y_pred_price = price_model.predict(X_test_scaled)
+y_pred_occupants = occupants_model.predict(X_test_scaled)
+y_pred = np.column_stack((y_pred_price, y_pred_occupants))
+print("Name:Someshwar Kumar")
+print("Reg.no:212224240157")
+print()
+print("Price Prediction - MSE:", mean_squared_error(y_test['Price'], y_pred_price))
+print("Price Prediction - R2 Score:", r2_score(y_test['Price'], y_pred_price))
+print("Occupants Prediction - MSE:", mean_squared_error(y_test['Occupants'], y_pred_occupants))
+print("Occupants Prediction - R2 Score:", r2_score(y_test['Occupants'], y_pred_occupants))
+print("\nActual values:\n", y_test.values)
+print("\nPredicted values:\n", y_pred)
 ```
 
 ## Output:
-![multivariate linear regression model for predicting the price of the house and number of occupants in the house](sam.png)
 
-
-
-
-<img width="393" height="24" alt="Screenshot 2025-11-20 064841" src="https://github.com/user-attachments/assets/ae4aec80-bcf5-400c-a371-3d5dd90dcdf5" />
-
-
-
-
-<img width="295" height="138" alt="Screenshot 2025-11-20 064848" src="https://github.com/user-attachments/assets/c370dabd-bae5-4f26-bef2-4b6f1e70ba99" />
+<img width="582" height="337" alt="image" src="https://github.com/user-attachments/assets/31ca263f-460c-4562-bf67-1c5ad7fe04da" />
 
 
 ## Result:
