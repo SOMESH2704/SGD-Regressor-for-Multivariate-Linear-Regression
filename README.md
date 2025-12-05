@@ -18,63 +18,67 @@ Program to implement the multivariate linear regression model for predicting the
 Developed by: SOMESHWAR KUMAR
 RegisterNumber:  212224240157
 
-# Code cell
 import numpy as np
-from sklearn.datasets import fetch_california_housing
+import pandas as pd
 from sklearn.linear_model import SGDRegressor
-from sklearn.multioutput import MultiOutputRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error, r2_score
 
-# Code cell
-data = fetch_california_housing()
 
-# Select first 3 features (for demonstration)
-X = data.data[:, :3]   # shape (n_samples, 3)
+data = {
+    'Size': [750, 800, 850, 900, 1200, 1500, 1700, 2000, 2200, 2500],
+    'Rooms': [2, 2, 2, 3, 3, 4, 4, 5, 5, 6],
+    'Location': [1, 2, 1, 3, 2, 3, 1, 2, 3, 2],
+    'Price': [50, 55, 60, 70, 100, 130, 150, 200, 220, 250],
+    'Occupants': [3, 3, 4, 4, 5, 6, 6, 7, 8, 9]
+}
 
-# Create a multi-output target: [median_house_value, some_other_numeric_column]
-# Here we use column index 6 (for demonstration) as the second output
-Y = np.column_stack((data.target, data.data[:, 6]))
+df = pd.DataFrame(data)
 
-print("X shape:", X.shape)
-print("Y shape:", Y.shape)
-print("Example X (first row):", X[0])
-print("Example Y (first row):", Y[0])
 
-# Code cell
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+X = df[['Size', 'Rooms', 'Location']]
+y = df[['Price', 'Occupants']]
 
-print("Train shapes:", X_train.shape, Y_train.shape)
-print("Test shapes: ", X_test.shape, Y_test.shape)
 
-# Code cell
-scaler_X = StandardScaler()
-scaler_Y = StandardScaler()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Fit on training data and transform both train and test
-X_train_scaled = scaler_X.fit_transform(X_train)
-X_test_scaled = scaler_X.transform(X_test)
 
-Y_train_scaled = scaler_Y.fit_transform(Y_train)
-Y_test_scaled = scaler_Y.transform(Y_test)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-print("Scaled X_train mean (approx):", X_train_scaled.mean(axis=0))
-print("Scaled Y_train mean (approx):", Y_train_scaled.mean(axis=0))
 
-# Code cell
-sgd = SGDRegressor(max_iter=1000, tol=1e-3, random_state=42)  # you can also set alpha, eta0, penalty etc.
-multi_output_sgd = MultiOutputRegressor(sgd)
+price_model = SGDRegressor(max_iter=1000, tol=1e-3, random_state=42)
+occupants_model = SGDRegressor(max_iter=1000, tol=1e-3, random_state=42)
 
-# Fit on scaled training data
-multi_output_sgd.fit(X_train_scaled, Y_train_scaled)
+
+price_model.fit(X_train_scaled, y_train['Price'])
+occupants_model.fit(X_train_scaled, y_train['Occupants'])
+
+
+y_pred_price = price_model.predict(X_test_scaled)
+y_pred_occupants = occupants_model.predict(X_test_scaled)
+
+
+y_pred = np.column_stack((y_pred_price, y_pred_occupants))
+
+
+print("Price Prediction - MSE:", mean_squared_error(y_test['Price'], y_pred_price))
+print("Price Prediction - R2 Score:", r2_score(y_test['Price'], y_pred_price))
+
+print("Occupants Prediction - MSE:", mean_squared_error(y_test['Occupants'], y_pred_occupants))
+print("Occupants Prediction - R2 Score:", r2_score(y_test['Occupants'], y_pred_occupants))
+
+print("\nActual values:\n", y_test.values)
+print("\nPredicted values:\n", y_pred)
 
 */
 ```
 ## Output:
-<img width="605" height="594" alt="1" src="https://github.com/user-attachments/assets/1ea7b00d-8871-4c92-afd0-685643b57ef4" />
 
-<img width="386" height="181" alt="2" src="https://github.com/user-attachments/assets/dba73047-7920-47b0-9d55-929267b46c53" />
+
+<img width="502" height="287" alt="image" src="https://github.com/user-attachments/assets/e17642c7-6336-4a52-a244-c1c91773a1f4" />
 
 ## Result:
 Thus the program to implement the multivariate linear regression model for predicting the price of the house and number of occupants in the house with SGD regressor is written and verified using python programming.
